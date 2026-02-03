@@ -25,6 +25,12 @@ app.use("/review",reviewAPIs);
 
 const sellerAPIs =require("./APIs/SellerAPI");
 app.use("/seller",sellerAPIs);
+const passport = require("passport");
+require("./Config/Passport");
+
+app.use(passport.initialize());
+const authAPI = require("./APIs/AuthAPI");
+app.use("/auth", authAPI);
 
 
 app.listen(process.env.PORT, () =>
