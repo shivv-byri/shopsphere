@@ -1,10 +1,12 @@
 require("dotenv").config();
 const express = require("express");
+const passport = require("passport");
 const connectDB = require("./db");
 
 const app = express();
 connectDB();
-app.use(express.json());  
+
+app.use(express.json());
 
 require("./models/User");
 require("./models/Seller");
@@ -13,26 +15,18 @@ require("./models/Cart");
 require("./models/Order");
 require("./models/Review");
 
+require("./Config/Passport");
+app.use(passport.initialize());
+
 app.get("/", (req, res) => {
   res.send("API is running");
 });
 
-const cartAPIs = require("./APIs/CartAPI");
-app.use("/cart", cartAPIs);
+app.use("/auth", require("./APIs/AuthAPI"));
+app.use("/cart", require("./APIs/CartAPI"));
+app.use("/review", require("./APIs/ReviewAPI"));
+app.use("/seller", require("./APIs/SellerAPI"));
 
-const reviewAPIs =require("./APIs/ReviewAPI");
-app.use("/review",reviewAPIs); 
-
-const sellerAPIs =require("./APIs/SellerAPI");
-app.use("/seller",sellerAPIs);
-const passport = require("passport");
-require("./Config/Passport");
-
-app.use(passport.initialize());
-const authAPI = require("./APIs/AuthAPI");
-app.use("/auth", authAPI);
-
-
-app.listen(process.env.PORT, () =>
-  console.log(`Server running on port ${process.env.PORT}`)
-);
+app.listen(process.env.PORT, () => {
+  console.log(`Server running on port ${process.env.PORT}`);
+});
